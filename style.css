@@ -1,0 +1,43 @@
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#0b0b0f;color:#fff;overflow-x:hidden}
+header{height:54px;background:#101016;border-bottom:1px solid #222;display:flex;align-items:center;justify-content:space-between;padding:0 12px;position:sticky;top:0;z-index:20}
+header b{font-size:22px;letter-spacing:1.5px} header b span{color:#00e676}
+.topActions{display:flex;gap:8px}
+.topActions button{border:0;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer;font-size:14px}
+.btnImport{background:#222;color:#fff} .btnExport{background:#00e676;color:#000} .btnMenu{background:#222;color:#fff;font-size:18px}
+.stage{background:#000;display:flex;justify-content:center;align-items:center;padding:12px;min-height:340px;position:relative}
+#preview{max-width:100%;max-height:52vh;border-radius:16px;background:#111}
+#textOverlay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-weight:900;font-size:28px;text-shadow:3px 3px 0 #000;text-align:center;width:80%;pointer-events:none;white-space:nowrap}
+#textOverlay.scroll{animation:scrollText 4s linear infinite}
+@keyframes scrollText{0%{transform:translate(-20%,-50%)}50%{transform:translate(-80%,-50%)}100%{transform:translate(-20%,-50%)}}
+.controls{display:flex;gap:8px;justify-content:center;padding:10px;flex-wrap:wrap;background:#101016}
+.controls button,.controls select{background:#1e1e28;border:1px solid #333;color:#fff;padding:10px 12px;border-radius:10px}
+.timeline{background:#14141c;padding:14px;border-top:1px solid #222}
+.timeline h4{font-size:12px;color:#888;margin-bottom:6px}
+.waveWrap{position:relative;height:70px;background:#1a1a24;border-radius:12px;overflow:hidden;border:1px solid #333}
+canvas{width:100%;height:100%;display:block}
+.handle{position:absolute;top:0;bottom:0;width:14px;background:#00e676;cursor:ew-resize;display:flex;align-items:center;justify-content:center;font-size:10px;color:#000;font-weight:900;z-index:3}
+.handle.left{left:0;border-radius:12px 0 0 12px} .handle.right{right:0;border-radius:0 12px 12px 0}
+.playhead{position:absolute;top:0;bottom:0;width:3px;background:#fff;z-index:2;pointer-events:none}
+.thumbs{display:flex;gap:4px;overflow-x:auto;margin-top:8px;padding:4px 0}
+.thumb{min-width:90px;height:56px;background:#222;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;position:relative;flex-shrink:0;border:2px solid transparent;cursor:pointer}
+.thumb.sel{border-color:#00e676} .thumb.del{opacity:.3;text-decoration:line-through}
+.clipInfo{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.clipInfo button{flex:1;padding:12px;border:0;border-radius:12px;font-weight:800}
+.del{background:#ff3b30;color:#fff} .keep{background:#00e676;color:#000} .split{background:#fff;color:#000}
+.sidebar{position:fixed;top:0;right:-300px;width:300px;max-width:85vw;height:100dvh;background:#16161e;z-index:50;transition:.3s;padding:16px;overflow-y:auto;border-left:1px solid #333}
+.sidebar.open{right:0}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:40}
+.overlay.show{display:block}
+.sideBtn{width:100%;background:#1e1e28;border:1px solid #333;color:#fff;padding:14px;border-radius:12px;text-align:left;margin-bottom:10px;font-size:15px}
+.sideBtn small{color:#888;display:block;font-size:12px}
+.sheet{position:fixed;left:0;right:0;bottom:0;background:#18181f;border-radius:20px 20px 0 0;padding:18px;padding-bottom:30px;z-index:60;display:none;max-height:70vh;overflow-y:auto}
+.sheet.show{display:block}
+.sheet input,.sheet textarea,.sheet select{width:100%;padding:12px;background:#222;border:1px solid #333;color:#fff;border-radius:10px;margin:8px 0}
+.sheet button{width:100%;padding:13px;border:0;border-radius:12px;background:#00e676;font-weight:900;margin-top:8px}
+.aiBox{background:#121212;border:1px solid #00e67633;border-radius:14px;padding:14px;margin:12px}
+.aiBox button{background:#00e676;border:0;padding:10px 14px;border-radius:10px;font-weight:900;margin-top:8px}
+footer{background:#0a0a0e;padding:20px 14px;text-align:center;color:#777;font-size:12px;line-height:1.7;border-top:1px solid #222}
+footer a{color:#aaa;text-decoration:none;margin:0 6px}
+footer details{margin:8px auto;max-width:600px;text-align:left;background:#14141a;padding:12px;border-radius:12px}
+footer summary{cursor:pointer;color:#fff;font-weight:700}
