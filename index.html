@@ -3,194 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>EDIT PRO - PC + Cell</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
-body{background:#0a0a0a;color:white;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-header{background:#111;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #222;flex-shrink:0}
-header b{font-size:17px} header b span{color:#00ff88}
-header button{background:#00ff88;border:0;padding:9px 14px;border-radius:10px;font-weight:900;cursor:pointer;font-size:14px}
-.main{flex:1;display:flex;overflow:hidden;min-height:0}
-.left{width:230px;background:#111;padding:12px;border-right:1px solid #222;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
-.left h3{font-size:11px;color:#888;margin-top:10px;letter-spacing:1px}
-.tool{background:#1e1e1e;border:1px solid #333;padding:11px;border-radius:12px;cursor:pointer;text-align:left;color:white;font-size:14px}
-.tool:active{transform:scale(0.97)}
-.tool.active{border-color:#00ff88;background:#0f2a1d}
-.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;position:relative;padding:14px;gap:10px;min-width:0}
-.videoWrap{position:relative;display:flex;justify-content:center;align-items:center;width:100%;max-width:780px;flex:1;min-height:0}
-#preview{max-width:100%;max-height:100%;background:#111;border-radius:14px;object-fit:contain}
-#preview.vertical{aspect-ratio:9/16}
-#preview.horizontal{aspect-ratio:16/9}
-#textOverlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:clamp(22px,5vw,42px);font-weight:900;text-shadow:3px 3px 0 #000, -1px -1px 0 #000;text-align:center;pointer-events:none;width:82%;word-break:break-word;z-index:2}
-.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
-.controls button,.controls select,.controls input{background:#1e1e1e;color:white;border:1px solid #333;padding:10px 12px;border-radius:10px;font-size:14px}
-.controls button{cursor:pointer}
-.formatBtn{background:#222!important}
-.formatBtn.active{background:#00ff88!important;color:#000!important;font-weight:900;border-color:#00ff88!important}
-.timeline{background:#111;border-top:1px solid #222;padding:12px;flex-shrink:0}
-.timeline-top{display:flex;gap:10px;align-items:center;margin-bottom:10px}
-.timeline-top input[type=range]{flex:1;accent-color:#00ff88;height:28px}
-.track{background:#1e1e1e;border-radius:10px;min-height:42px;position:relative;overflow:hidden;margin-bottom:8px;border:1px solid #333;display:flex;align-items:center;padding:8px 10px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.track.video{background:linear-gradient(90deg,#2d5a3d,#1e1e1e)}
-.track.audio{background:linear-gradient(90deg,#3d2d5a,#1e1e1e)}
-.track.text{background:linear-gradient(90deg,#5a3d2d,#1e1e1e)}
-.uploadBtn{border:2px dashed #333;padding:16px;text-align:center;border-radius:12px;cursor:pointer;color:#888;font-size:14px}
-#fileInput,#musicInput{display:none}
-
-/* --- VERSIONE CELLULARE --- */
-@media (max-width: 768px){
-  header{height:48px} header b{font-size:15px}
-  .main{flex-direction:column}
-  .left{width:100%;border-right:0;border-bottom:1px solid #222;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:10px;gap:8px;flex-shrink:0}
-  .left h3,.left #panelTitle,.left #panel{display:none}
-  .left .tool{white-space:nowrap;flex-shrink:0;padding:10px 14px}
-  .left .uploadBtn{flex-shrink:0;padding:10px 14px;border-style:solid}
-  .center{padding:8px}
-  .controls{width:100%}
-  .controls button,.controls select{flex:1}
-  .timeline{padding:10px}
-  .track{font-size:12px;min-height:36px}
-  .mobilePanel{position:fixed;left:0;right:0;bottom:0;background:#161616;border-top:2px solid #00ff88;border-radius:20px 20px 0 0;padding:16px;padding-bottom:26px;z-index:99;display:none;max-height:55vh;overflow-y:auto}
-  .mobilePanel.show{display:block}
-  .mobilePanel h3{margin-bottom:12px}
-  .mobilePanel .tool{width:100%;margin-bottom:8px}
-  .mobilePanel input[type=text]{width:100%;padding:12px;background:#1e1e1e;border:1px solid #333;color:white;border-radius:10px;margin-bottom:10px;font-size:16px}
-}
-.mobilePanel{display:none}
-@media (min-width:769px){ .mobilePanel{display:none!important} }
-</style>
+<title>VEXA - Edita come un PRO</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<header>
-  <b>EDIT<span>PRO</span></b>
-  <span id="deviceLabel" style="font-size:12px;color:#888">🖥️ PC</span>
-  <button onclick="exportVideo()">⬇ ESPORTA</button>
-</header>
-
-<div class="main">
-  <div class="left">
-    <div class="uploadBtn" onclick="document.getElementById('fileInput').click()">+ CARICA VIDEO</div>
-    <input type="file" id="fileInput" accept="video/*" onchange="loadVideo(event)">
-    <h3>STRUMENTI</h3>
-    <button class="tool active" onclick="openTool('taglia',this)">✂️ Taglia</button>
-    <button class="tool" onclick="openTool('testo',this)">🔤 Testo</button>
-    <button class="tool" onclick="openTool('musica',this)">🎵 Musica</button>
-    <button class="tool" onclick="openTool('velocita',this)">⏩ Velocità</button>
-    <button class="tool" onclick="openTool('filtro',this)">🎨 Filtri</button>
-    <h3 id="panelTitle">TAGLIA</h3>
-    <div id="panel"></div>
-  </div>
-
-  <div class="center">
-    <div class="videoWrap">
-      <video id="preview" class="horizontal" controls playsinline></video>
-      <div id="textOverlay"></div>
-    </div>
-    <div class="controls">
-      <button class="formatBtn active" id="btnH" onclick="setFormat('horizontal')">↔️ 16:9 YouTube</button>
-      <button class="formatBtn" id="btnV" onclick="setFormat('vertical')">📱 9:16 TikTok</button>
-      <button onclick="playPause()">▶️ Play</button>
-      <select onchange="setSpeed(this.value)"><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option></select>
-      <select onchange="setFilter(this.value)"><option value="none">Nessun filtro</option><option value="grayscale(1)">B/N</option><option value="contrast(1.4) saturate(1.5)">Vivid</option><option value="sepia(0.6)">Vintage</option></select>
-    </div>
-  </div>
-</div>
-
-<div class="timeline">
-  <div class="timeline-top">
-    <span id="timeLabel" style="font-size:13px;white-space:nowrap">0:00 / 0:00</span>
-    <input type="range" id="seek" value="0" min="0" max="100" step="0.1" oninput="seekTo(this.value)">
-    <button onclick="splitNow()" style="background:#00ff88;border:0;padding:10px 12px;border-radius:10px;font-weight:900;cursor:pointer;white-space:nowrap">✂️ DIVIDI</button>
-  </div>
-  <div class="track video">🎬 <span id="trackVideoName" style="margin-left:6px">Nessun video</span></div>
-  <div class="track audio">🎵 <span id="trackAudioName" style="margin-left:6px">Nessuna musica</span></div>
-  <div class="track text">🔤 <span id="trackTextName" style="margin-left:6px">Nessun testo</span></div>
-  <input type="file" id="musicInput" accept="audio/*" onchange="loadMusic(event)">
-</div>
-
-<!-- PANNELLO MOBILE -->
-<div class="mobilePanel" id="mobilePanel">
-  <h3 id="mTitle">TAGLIA</h3>
-  <div id="mContent"></div>
-  <button class="tool" onclick="closePanel()" style="background:#333">Chiudi</button>
-</div>
-
-<script>
-let video=document.getElementById('preview'), seek=document.getElementById('seek');
-let startTime=0, endTime=0, audio=new Audio(); audio.loop=true;
-let isMobile = window.innerWidth<=768;
-document.getElementById('deviceLabel').innerText = isMobile ? '📱 CELL' : '🖥️ PC';
-if(isMobile) setFormat('vertical');
-
-function loadVideo(e){
-  let f=e.target.files[0]; if(!f) return;
-  video.src=URL.createObjectURL(f);
-  document.getElementById('trackVideoName').innerText=f.name;
-  video.onloadedmetadata=()=>{ seek.max=video.duration; endTime=video.duration; updateCut(); updateTime(); }
-  closePanel();
-}
-function loadMusic(e){
-  let f=e.target.files[0]; if(!f) return;
-  audio.src=URL.createObjectURL(f);
-  document.getElementById('trackAudioName').innerText=f.name; audio.play(); closePanel();
-}
-function setFormat(f){
-  video.className=f;
-  document.getElementById('btnH').classList.toggle('active',f==='horizontal');
-  document.getElementById('btnV').classList.toggle('active',f==='vertical');
-}
-function openTool(tool,btn){
-  document.querySelectorAll('.left .tool').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  renderPanel(tool);
-  if(isMobile){
-    document.getElementById('mobilePanel').classList.add('show');
-  }
-}
-function renderPanel(tool){
-  let title = tool==='taglia'?'TAGLIA':tool==='testo'?'TESTO':tool==='musica'?'MUSICA':tool==='velocita'?'VELOCITÀ':'FILTRI';
-  let html='';
-  if(tool==='taglia') html=`<button class="tool" onclick="setStart()">▶ Imposta INIZIO</button><button class="tool" onclick="setEnd()">⏹ Imposta FINE</button><p id="cutInfo" style="margin-top:8px;color:#00ff88">Inizio: ${startTime.toFixed(1)}s - Fine: ${endTime.toFixed(1)}s</p>`;
-  if(tool==='testo') html=`<input type="text" id="textInput" placeholder="Scrivi testo TikTok..."><button class="tool" onclick="applyText()">Applica Testo</button>`;
-  if(tool==='musica') html=`<button class="tool" onclick="document.getElementById('musicInput').click()">🎵 Carica MP3</button><label>Volume</label><input type="range" min="0" max="1" step="0.1" value="0.5" oninput="audio.volume=this.value" style="width:100%">`;
-  if(tool==='velocita') html=`<button class="tool" onclick="setSpeed(0.5)">0.5x Slow</button><button class="tool" onclick="setSpeed(1)">1x Normale</button><button class="tool" onclick="setSpeed(2)">2x Veloce</button>`;
-  if(tool==='filtro') html=`<button class="tool" onclick="setFilter('none')">Originale</button><button class="tool" onclick="setFilter('grayscale(1)')">Bianco e Nero</button><button class="tool" onclick="setFilter('contrast(1.4) saturate(1.5)')">Vivid</button><button class="tool" onclick="setFilter('sepia(0.6)')">Vintage</button>`;
-  document.getElementById('panelTitle').innerText=title;
-  document.getElementById('panel').innerHTML=html;
-  document.getElementById('mTitle').innerText=title;
-  document.getElementById('mContent').innerHTML=html;
-}
-function closePanel(){ document.getElementById('mobilePanel').classList.remove('show'); }
-function setStart(){ startTime=video.currentTime; updateCut(); }
-function setEnd(){ endTime=video.currentTime; updateCut(); }
-function updateCut(){
-  document.querySelectorAll('#cutInfo').forEach(el=>el.innerText=`Inizio: ${startTime.toFixed(1)}s - Fine: ${endTime.toFixed(1)}s`);
-}
-function seekTo(v){ video.currentTime=v; }
-function playPause(){ video.paused?video.play():video.pause(); }
-function applyText(){
-  let t=document.querySelector('#mContent #textInput')?.value || document.querySelector('#panel #textInput')?.value || '';
-  document.getElementById('textOverlay').innerText=t;
-  document.getElementById('trackTextName').innerText=t; closePanel();
-}
-function setSpeed(v){ video.playbackRate=v; }
-function setFilter(v){ video.style.filter=v; }
-function splitNow(){ alert('Diviso a '+video.currentTime.toFixed(1)+'s!'); }
-video.ontimeupdate=()=>{
-  seek.value=video.currentTime; updateTime();
-  if(endTime>0 && video.currentTime>=endTime){ video.pause(); video.currentTime=startTime; }
-};
-function updateTime(){
-  let f=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
-  document.getElementById('timeLabel').innerText=f(video.currentTime||0)+' / '+f(video.duration||0);
-}
-function exportVideo(){
-  if(!video.src){ alert('Carica prima un video!'); return; }
-  alert('Pronto per esportare: '+startTime.toFixed(1)+'s -> '+endTime.toFixed(1)+'s | Formato: '+(video.className==='vertical'?'9:16 TikTok':'16:9 YouTube'));
-  video.currentTime=startTime; video.play();
-}
-renderPanel('taglia');
-</script>
+<header><b>VEXA</b><div class="topActions"><button class="btnImport" onclick="document.getElementById('fileInput').click()">⬆ IMPORTA</button><button class="btnExport" onclick="exportVideo()">⬇ ESPORTA</button><button class="btnMenu" onclick="toggleSidebar(true)">☰</button></div></header>
+<input type="file" id="fileInput" accept="video/*" hidden>
+<input type="file" id="musicInput" accept="audio/*" hidden>
+<div class="stage"><video id="preview" controls playsinline></video><div id="textOverlay"></div></div>
+<div class="controls"><button onclick="playPause()">▶️ Play / Pausa</button><button onclick="splitAtPlayhead()">✂️ TAGLIA QUI</button><select onchange="setSpeed(this.value)"><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option></select><select onchange="setFilter(this.value)"><option value="none">Nessun filtro</option><option value="grayscale(1)">B/N</option><option value="contrast(1.4) saturate(1.5)">Vivid</option><option value="sepia(.6)">Vintage</option></select></div>
+<div class="aiBox"><b>🤖 VEXA AI</b><p id="aiText">Carica un video e ti dico dove tagliare.</p><button onclick="aiSuggest()">✨ CHIEDI A VEXA AI</button></div>
+<div class="timeline"><h4>🔊 VOLUME / ONDA - Trascina le maniglie verdi</h4><div class="waveWrap" id="waveWrap"><canvas id="wave"></canvas><div class="playhead" id="playhead"></div><div class="handle left" id="hLeft">◀</div><div class="handle right" id="hRight">▶</div></div><h4 style="margin-top:12px">🎞️ CLIP</h4><div class="thumbs" id="thumbs"></div><div class="clipInfo"><button class="split" onclick="splitAtPlayhead()">✂️ DIVIDI</button><button class="del" onclick="deleteSelected()">🗑 ELIMINA</button><button class="keep" onclick="keepSelected()">✅ TIENI</button></div><p id="clipLabel">Carica un video per iniziare...</p></div>
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+<div class="sidebar" id="sidebar"><h2>VEXA Menu</h2><p style="color:#888;font-size:13px;margin:6px 0 14px">Tutto il resto è qui</p><button class="sideBtn" onclick="openSheet('testo')">🔤 Testo<small>Testo che scorre</small></button><button class="sideBtn" onclick="openSheet('musica')">🎵 Musica<small>Carica MP3</small></button><button class="sideBtn" onclick="openSheet('velocita')">⏩ Velocità<small>Slow / Veloce</small></button><button class="sideBtn" onclick="openSheet('filtri')">🎨 Filtri<small>Vivid, B/N</small></button><button class="sideBtn" onclick="openSheet('formato')">📐 Formato<small>9:16 / 16:9</small></button><button class="sideBtn" onclick="openSheet('ai')">🤖 VEXA AI<small>Idee, hook</small></button><p style="font-size:12px;color:#666;margin-top:16px">Tocca fuori per chiudere</p></div>
+<div class="sheet" id="sheet"><h3 id="sheetTitle">Testo</h3><div id="sheetContent"></div></div>
+<footer><b style="color:#fff;font-size:16px">VEXA</b><br>Edita video gratis, dal telefono.<br><a href="#" onclick="openSheet('privacy');return false">Privacy</a> • <a href="#" onclick="openSheet('cookie');return false">Cookie</a> • <a href="#" onclick="openSheet('licenze');return false">Licenze</a> • <a href="#" onclick="openSheet('faq');return false">FAQ</a><br>© 2026 VEXA. Tutti i diritti riservati.<br><span style="font-size:11px">I tuoi video restano sul tuo telefono.</span><details><summary>❓ FAQ - Cos'è VEXA?</summary><p>VEXA è un editor video gratis stile CapCut. Tagli, testi, musica, filtri e export.</p></details><details><summary>🍪 Cookie</summary><p>Solo cookie tecnici. Nessun tracciamento.</p></details><details><summary>📜 Licenze</summary><p>I contenuti che carichi sono tuoi. Usa musica con licenza.</p></details></footer>
+<script src="js/config.js"></script>
+<script src="js/video.js"></script>
+<script src="js/taglia.js"></script>
+<script src="js/testo.js"></script>
+<script src="js/musica.js"></script>
+<script src="js/filtri.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/main.js"></script>
 </body>
-  </html>
+</html>
