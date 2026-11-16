@@ -1,0 +1,6 @@
+services:
+    - type: web
+    name: vexa
+    env: static
+    buildCommand: ""
+    staticPublishPath: ./vexa
