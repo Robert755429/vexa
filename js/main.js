@@ -1,6 +1,5 @@
 // main.js - VEXA - Accende tutto
 // SIDEBAR + SHEET + CHIUDI TOCCANDO FUORI
-// Se si rompe un bottone, è solo qui dentro che devi guardare
 
 function toggleSidebar(open) {
   document.getElementById('sidebar').classList.toggle('open', open);
@@ -11,7 +10,6 @@ function closeAll() {
   toggleSidebar(false);
   document.getElementById('sheet').classList.remove('show');
   document.getElementById('overlay').classList.remove('show');
-  // se c'è musica in ascolto nella schermata di taglio, la fermiamo? No, la lasciamo andare
 }
 
 function openSheet(type) {
@@ -107,13 +105,20 @@ function openSheet(type) {
     `;
   }
 
-  // --- AI ---
+  // --- AI CHE EDITA DAVVERO ---
   if (type === 'ai') {
-    t.innerText = '🤖 VEXA AI';
+    t.innerText = '🤖 VEXA AI CHE EDITA';
     c.innerHTML = `
-      <p>La tua AI di editing. Dimmi cosa vuoi fare e ti aiuto.</p>
-      <button onclick="aiSuggest()">✨ Dammi un'idea</button>
-      <p style="margin-top:10px;background:#111;padding:12px;border-radius:12px;white-space:pre-wrap">${document.getElementById('aiText').innerText}</p>
+      <p>Scrivimi cosa vuoi e lo faccio sul video.</p>
+      <input id="aiInput" placeholder="Es: metti testo CIAO + filtro B/N + 2x">
+      <button onclick="aiChat()">✨ Fai tu!</button>
+      <div style="display:flex;gap:6px">
+        <button onclick="aiSuggest()" style="flex:1">💡 Idea</button>
+        <button onclick="aiCaption()" style="flex:1">✍️ Didascalia</button>
+        <button onclick="aiHashtags()" style="flex:1">#️⃣ Hashtag</button>
+      </div>
+      <p id="aiText" style="margin-top:10px;background:#111;padding:12px;border-radius:12px;white-space:pre-wrap">Prova: metti testo CIAO + filtro B/N + 2x</p>
+      <p style="font-size:12px;color:#888">Comandi: testo, filtro B/N / vivid / vintage, velocità 2x / 0.5x, formato tiktok / youtube / instagram, musica phonk, reset, togli testo</p>
     `;
   }
 
@@ -136,8 +141,9 @@ function openSheet(type) {
       <p><b>Cos'è VEXA?</b><br>Editor gratis stile CapCut, dal browser.</p>
       <p><b>Devo pagare?</b><br>No, è 100% free.</p>
       <p><b>Dove vanno i miei video?</b><br>Restano sul tuo telefono.</p>
-      <p><b>FAQ - Cos'è un API?</b><br>È la chiave che collega VEXA all'AI vera di Google. Se non la metti, VEXA usa l'AI finta gratis.</p>
+      <p><b>Cos'è un API?</b><br>È la chiave che collega VEXA all'AI vera di Google. Se non la metti, VEXA usa l'AI gratis di Pollinations, senza chiave e senza 18 anni.</p>
       <p><b>Perché alcune canzoni sono SOLO 30 SEC?</b><br>Perché sono famose e Apple dà solo l'anteprima. Quelle TUTTA sono free e le puoi tagliare dove vuoi.</p>
+      <p><b>L'AI può editare da sola?</b><br>Sì! Scrivile: "metti testo CIAO + filtro B/N + 2x" e lei lo fa.</p>
     `;
   }
 }
