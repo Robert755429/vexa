@@ -1,136 +1,36 @@
 <!DOCTYPE html>
-<html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>VEXA - Edita come un PRO</title>
-<link rel="stylesheet" href="css/style.css">
-</head>
+<html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>VEXA v2</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
+<header><div class="logo">VEXA <span>v2 - CAPCUT MODE</span></div><button class="green" onclick="exportVideo()">⬇ ESPORTA</button></header>
+<main>
+<div class="video-wrap"><video id="video" playsinline controls></video><div id="overlayText"></div><div id="stickerLayer"></div></div>
 
-<header>
-  <div class="logo">VEXA</div>
-  <div style="display:flex;gap:8px">
-    <button class="top-btn" onclick="document.getElementById('fileInput').click()">↑ IMPORTA</button>
-    <button class="top-btn green" onclick="exportVideo()">↓ ESPORTA</button>
-    <button class="menu-btn" onclick="toggleSidebar(true)">☰</button>
-  </div>
-</header>
-<input type="file" id="fileInput" accept="video/*" hidden>
-<input type="file" id="musicInput" accept="audio/*" hidden>
+<div class="card"><b>1. VIDEO + CLIP</b><input type="file" id="videoInput" accept="video/*">
+<div class="row"><button onclick="splitClip()">✂️ DIVIDI QUI</button><button onclick="undo()">↩ ANNULLA</button><button onclick="redo()">↪ RIFAI</button><button class="red" onclick="clearAll()">🗑 RESET</button></div>
+<div class="small">Premi una Clip per rivederla. X per cancellarla.</div><div id="clips" class="timeline"></div></div>
 
-<!-- VIDEO -->
-<div id="videoWrap">
-  <video id="video" playsinline preload="metadata"></video>
-  <div id="overlayText"></div>
-</div>
+<div class="card"><b>2. VELOCITÀ + FILTRO + FORMATO</b><div class="row">
+<div><label>Velocità</label><select id="speed" onchange="setSpeed()"><option value="0.5">0.5x</option><option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.5">1.5x</option><option value="2">2x</option><option value="3">3x</option></select></div>
+<div><label>Filtro</label><select id="filter" onchange="setFilter()"><option value="none">Nessuno</option><option value="grayscale(1)">Bianco e Nero</option><option value="sepia(1)">Vintage</option><option value="saturate(1.8) contrast(1.2)">Vivido</option><option value="blur(3px)">Blur</option><option value="hue-rotate(90deg) saturate(1.5)">Neon</option><option value="contrast(1.5) brightness(1.1)">VHS</option></select></div>
+<div><label>Formato</label><select onchange="document.querySelector('.video-wrap').style.aspectRatio=this.value"><option value="9/16">9:16 TikTok</option><option value="16/9">16:9 YouTube</option><option value="1/1">1:1 Instagram</option></select></div></div>
+<div class="row"><button onclick="rotateVideo()">🔄 RUOTA</button><button onclick="mirrorVideo()">🪞 SPECCHIA</button><button onclick="duplicateClip()">📄 DUPLICA CLIP</button><button onclick="overwriteClip()">♻️ SOVRASCRIVI CLIP</button></div></div>
 
-<!-- CONTROLLI -->
-<div class="controls">
-  <button onclick="togglePlay()">▶ Play / Pausa</button>
-  <button onclick="cutHere()">✂️ TAGLIA QUI</button>
-  <button id="speedBtn" onclick="openSheet('velocita')">1x</button>
-</div>
+<div class="card"><b>3. MUSICA - STOP VERO</b><input type="file" id="musicInput" accept="audio/*"><audio id="music"></audio>
+<div class="row"><button class="green" onclick="playMusic()">▶️ PLAY</button><button class="red" onclick="stopMusic()">⏹ STOP</button><button onclick="toggleLoop()">🔁 LOOP: <span id="loopTxt">OFF</span></button></div>
+<label>Volume Musica</label><input type="range" id="musicVol" min="0" max="100" value="50" oninput="setMusicVol()">
+<label>Volume Video</label><input type="range" id="videoVol" min="0" max="100" value="80" oninput="setVideoVol()">
+<div class="row"><button onclick="playSfx('boom')">💥 Boom</button><button onclick="playSfx('whoosh')">💨 Whoosh</button><button onclick="playSfx('clap')">👏 Applauso</button></div></div>
 
-<div class="controls">
-  <select id="filterSelect" onchange="setFilter(this.value); this.value='none2'">
-    <option value="none2">Nessun filtro</option>
-    <option value="grayscale(1)">B/N</option>
-    <option value="contrast(1.4) saturate(1.5)">Vivid</option>
-    <option value="sepia(0.6)">Vintage</option>
-  </select>
-</div>
+<div class="card"><b>4. TESTO + KARAOKE</b><input type="text" id="textInput" placeholder="Scrivi testo... es. VEXA SPINGE" oninput="updateText()">
+<div class="row"><div><label>Font</label><select id="fontSel" onchange="updateText()"><option value="Arial Black">TikTok Bold</option><option value="Impact">Impact</option><option value="Georgia">Serif</option><option value="Courier New">Typewriter</option><option value="Comic Sans MS">Mano</option><option value="Verdana">Neon Clean</option></select></div>
+<div><label>Colore</label><input type="color" id="colorSel" value="#ffffff" onchange="updateText()"></div>
+<div><label>Posizione</label><select id="posSel" onchange="updateText()"><option value="72%">Sotto</option><option value="45%">Centro</option><option value="15%">Sopra</option></select></div></div>
+<div class="row"><button onclick="toggleKaraoke()">🎤 KARAOKE / SCORRE</button><button onclick="clearText()">❌ TOGLI TESTO</button><button onclick="addSubtitle()">💬 SOTTOTITOLO</button></div></div>
 
-<!-- AI BOX -->
-<div class="card">
-  <p class="kicker">// VEXA AI</p>
-  <b id="aiStatus">Video caricato - Premi VEXA AI!</b>
-  <p id="aiSub" style="color:#9aa7bd;font-size:13px">Premi VEXA AI e dimmi cosa vuoi</p>
-  <button onclick="openAIChat()">✨ CHIEDI A VEXA AI</button>
-</div>
-
-<!-- ONDA -->
-<div class="card">
-  <p class="kicker">// VOLUME / ONDA</p>
-  <p style="font-size:12px;color:#888">Trascina le maniglie verdi</p>
-  <div class="wave-wrap">
-    <canvas id="wave" width="600" height="70"></canvas>
-    <div id="waveProgress"></div>
-  </div>
-  <p id="timeLabel" style="font-size:12px;color:#888">0:00 / 0:00</p>
-</div>
-
-<!-- CLIP -->
-<div class="card" id="clipBox" style="display:none">
-  <p class="kicker">// CLIP</p>
-  <div style="display:flex;gap:8px">
-    <div style="flex:1;background:#1a2233;padding:10px;border-radius:10px;text-align:center">PEZZO 1<br><span id="clip1">0:00-0:00</span></div>
-    <div style="flex:1;background:#1a2233;padding:10px;border-radius:10px;text-align:center">PEZZO 2<br><span id="clip2">0:00-0:00</span></div>
-  </div>
-  <div style="display:flex;gap:8px;margin-top:10px">
-    <button onclick="splitVideo()">✂️ DIVIDI</button>
-    <button onclick="deleteClip()" style="background:#ff3b30">ELIMINA</button>
-    <button onclick="keepClip()" style="background:#00c853">✓ TIENI</button>
-  </div>
-  <p id="clipInfo" style="font-size:12px;color:#888"></p>
-</div>
-
-<footer style="text-align:center;padding:20px;color:#888;font-size:12px">
-  <b style="color:#fff">VEXA</b><br>Edita video gratis, dal telefono.<br>
-  Privacy • Cookie • Licenze • FAQ<br>© 2026 VEXA - I tuoi video restano sul tuo telefono.
-</footer>
-
-<!-- SIDEBAR -->
-<div id="sidebar">
-  <h3>VEXA</h3>
-  <p style="color:#888;font-size:12px">// MENU</p>
-  <button onclick="openSheet('testo')">🔤 Testo che scorre</button>
-  <button onclick="openSheet('musica')">🎵 Musica</button>
-  <button onclick="openSheet('velocita')">⏩ Velocità</button>
-  <button onclick="openSheet('filtri')">🎨 Filtri</button>
-  <button onclick="openSheet('formato')">📐 Formato</button>
-  <button class="ai-btn" onclick="openAIChat()">🤖 VEXA AI - Chat</button>
-  <hr style="border-color:#1e2a44">
-  <button onclick="openSheet('privacy')">Privacy</button>
-  <button onclick="openSheet('cookie')">Cookie</button>
-  <button onclick="openSheet('licenze')">Licenze</button>
-  <button onclick="openSheet('faq')">FAQ</button>
-  <button onclick="closeAll()" style="background:#1a2233">← Chiudi</button>
-</div>
-
-<div id="overlay" onclick="closeAll()"></div>
-<div id="sheet">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <b id="sheetTitle">Titolo</b>
-    <button onclick="closeAll()" style="width:38px;height:38px;border-radius:50%;padding:0;background:#1a2233">✕</button>
-  </div>
-  <div id="sheetContent"></div>
-</div>
-
-<!-- AI CHAT -->
-<div id="aiChat">
-  <div class="ai-head">
-    <b><span>// VEXA AI</span>🤖 VEXA AI che edita</b>
-    <div style="display:flex;gap:8px">
-      <button class="ai-close" onclick="clearAIChat()" style="font-size:11px;width:auto;padding:0 10px">Cancella</button>
-      <button class="ai-close" onclick="closeAIChat()">✕</button>
-    </div>
-  </div>
-  <div id="aiMsgs"></div>
-  <div class="ai-quick">
-    <button onclick="aiQuick('metti testo CIAO + filtro B/N + 2x')">✨ Esempio edit</button>
-    <button onclick="aiQuick('Dammi un idea virale')">💡 Idea</button>
-    <button onclick="aiQuick('Dammi 3 didascalie')">✍️ Didascalia</button>
-    <button onclick="aiQuick('Dammi hashtag virali')">#️⃣ Hashtag</button>
-  </div>
-  <div class="ai-input-bar">
-    <input id="aiInputChat" placeholder="Scrivi cosa vuoi..." onkeydown="if(event.key==='Enter') aiSend()">
-    <button onclick="aiSend()">➤</button>
-  </div>
-</div>
-
-<script src="js/editor.js"></script>
-<script src="js/main.js"></script>
-<script src="js/ai.js"></script>
-</body>
-  </html>
+<div class="card"><b>5. STICKER + TRANSIZIONE + AI</b>
+<div class="row"><button onclick="addSticker('🔥')">🔥</button><button onclick="addSticker('😂')">😂</button><button onclick="addSticker('❤️')">❤️</button><button onclick="addSticker('⭐')">⭐</button><button onclick="addSticker('👑')">👑</button></div>
+<label>Transizione</label><select id="transSel"><option>Dissolvenza</option><option>Zoom</option><option>Flash</option><option>Slide</option></select>
+<input type="text" id="aiInput" placeholder="Chiedi a VEXA: rendilo virale..."><button class="primary" style="width:100%;margin-top:8px" onclick="askAI()">CHIEDI A VEXA ✨</button><p id="aiOut" class="small"></p></div>
+</main>
+<script src="js/editor.js"></script><script src="js/main.js"></script><script src="js/ai.js"></script>
+</body></html>
