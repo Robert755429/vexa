@@ -1,32 +1,28 @@
-// ai.js - VEXA AI vera con Gemini, se hai la chiave. Altrimenti finta gratis.
-async function aiSuggest(){
-  if(!clips.length) return alert('Carica prima un video');
-  let box=document.getElementById('aiText');
-  box.innerText='🤖 VEXA AI sta pensando...';
+// ai.js - VEXA AI - VERSIONE SENZA CHIAVE
+// Usa Pollinations - gratis, senza account, senza 18 anni
+// Se un giorno hai la chiave Google, la rimettiamo
 
-  // Se hai messo la chiave vera -> chiama Gemini
-  if(typeof USE_REAL_AI !== 'undefined' && USE_REAL_AI){
-    try{
-      let prompt = `Sei VEXA AI, assistente editing stile CapCut. Video di ${Math.round(duration)} secondi, ${clips.length} pezzi. Dimmi in italiano, corto e diretto: 1 dove tagliare, 2 che testo che scorre mettere, 3 che musica usare.`;
-      let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,{
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ contents:[{ parts:[{ text: prompt }] }] })
-      });
-      let data = await res.json();
-      let answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Errore AI';
-      box.innerText = '🤖 VEXA AI: ' + answer;
-      openSheet('ai');
-      return;
-    }catch(e){ box.innerText='Errore API, uso AI finta. Controlla la chiave in config.js'; }
+async function aiSuggest() {
+  let box = document.getElementById('aiText');
+  box.innerText = '🤖 VEXA AI sta pensando...';
+
+  let prompt = "Sei VEXA, un editor video per TikTok. Dammi 3 idee virali per un video, con hook dei primi 2 secondi, musica consigliata e didascalia. Rispondi in italiano, in modo corto e divertente.";
+
+  try {
+    // Pollinations - niente chiave, niente login
+    let res = await fetch('https://text.pollinations.ai/' + encodeURIComponent(prompt));
+    let text = await res.text();
+    if(!text || text.length < 10) throw new Error('vuoto');
+    box.innerText = text;
+  } catch(e) {
+    // Se internet va male, torna l'AI finta di prima
+    let idee = [
+      "🔥 HOOK: 'Non guardare fino alla fine...' + zoom veloce + musica phonk + testo che scorre",
+      "🎬 IDEA: Transizione con la mano davanti alla camera, cambio outfit, beat drop a 0:08",
+      "💡 DIDASCALIA: 'Chi altro fa così? 😂' + hashtag #vexa #fyp #viral",
+      "⚡ IDEA: Video 0.5x all'inizio, poi 2x sul ritornello, filtro Vivid",
+      "🎵 IDEA: Usa una canzone con bollino TUTTA, taglia il ritornello da 1:20 a 1:50"
+    ];
+    box.innerText = idee[Math.floor(Math.random()*idee.length)];
   }
-
-  // Altrimenti AI finta gratis - senza API
-  let ideas=[
-    'Taglia i primi 2 secondi, sono lenti. Inizia con la parte più forte!',
-    'Metti un testo che scorre: "GUARDA FINO ALLA FINE"',
-    'Metti musica a 0.5 di volume, così si sente la tua voce',
-    'Dividi a metà e cancella la parte dove non succede niente'
-  ];
-  box.innerText='🤖 VEXA AI: '+ideas[Math.floor(Math.random()*ideas.length)];
-  openSheet('ai');
 }
