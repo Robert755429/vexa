@@ -1,4 +1,4 @@
-// editor.js - VEXA - VIDEO + FILTRI + VELOCITA + ONDA 1 VOLTA SOLA + TAGLIO
+// editor.js - VIDEO + FILTRI + MUSICA + TESTO + TAGLIO + ONDA
 let video = document.getElementById('video');
 let audio = new Audio();
 let cutTime = 0;
@@ -11,18 +11,15 @@ function formatTime(s){
   return m+':'+(sec<10?'0':'')+sec;
 }
 
-// CARICA VIDEO
 document.getElementById('fileInput').addEventListener('change', e=>{
   let f = e.target.files[0]; if(!f) return;
-  let url = URL.createObjectURL(f);
-  video.src = url;
+  video.src = URL.createObjectURL(f);
   waveDone = false;
   video.play();
   document.getElementById('aiStatus').innerText = 'Video caricato: ' + f.name;
   document.getElementById('aiSub').innerText = 'Premi VEXA AI e dimmi cosa vuoi';
 });
 
-// CARICA MP3
 document.getElementById('musicInput').addEventListener('change', e=>{
   let f = e.target.files[0]; if(!f) return;
   audio.src = URL.createObjectURL(f);
@@ -32,7 +29,6 @@ document.getElementById('musicInput').addEventListener('change', e=>{
 
 function togglePlay(){ video.paused ? video.play() : video.pause(); }
 
-// FILTRO - FIX LAG: pausa 120ms, chiude menu subito, 1 solo filtro
 function setFilter(f){
   if(f==='none2') f='none';
   let wasPlaying = !video.paused;
@@ -44,7 +40,6 @@ function setFilter(f){
   if(sel) sel.value = 'none2';
 }
 
-// VELOCITA - FIX LAG
 function setSpeed(s){
   video.playbackRate = s;
   let b = document.getElementById('speedBtn');
@@ -52,7 +47,6 @@ function setSpeed(s){
   closeAll();
 }
 
-// TESTO
 function applyText(){
   let txt = document.getElementById('txt').value.trim();
   if(!txt) return;
@@ -64,7 +58,6 @@ function applyText(){
   closeAll();
 }
 
-// TAGLIA / CLIP
 function cutHere(){
   cutTime = video.currentTime;
   video.pause();
@@ -78,7 +71,6 @@ function splitVideo(){ cutHere(); }
 function deleteClip(){ alert('Pezzo eliminato - usa ESPORTA per salvare'); }
 function keepClip(){ alert('Pezzo tenuto!'); }
 
-// ONDA - FIX LAG: si disegna 1 VOLTA SOLA
 video.addEventListener('loadedmetadata', ()=>{
   waveDone = false;
   setTimeout(drawWave, 300);
@@ -97,7 +89,6 @@ function drawWave(){
   }
 }
 
-// TIME - FIX LAG: aggiorna ogni 250ms, non ogni frame
 video.addEventListener('timeupdate', ()=>{
   let now = Date.now();
   if(now - lastTimeUpdate < 250) return;
@@ -108,7 +99,6 @@ video.addEventListener('timeupdate', ()=>{
   if(prog && video.duration) prog.style.width = (video.currentTime/video.duration*100) + '%';
 });
 
-// MUSICA - CERCA CON DEBOUNCE 400ms - FIX LAG
 let musicTimer;
 function searchMusicDebounced(q){ clearTimeout(musicTimer); musicTimer=setTimeout(()=>searchMusic(q), 400); }
 async function searchMusic(q){
@@ -134,4 +124,4 @@ function exportVideo(){
   let a = document.createElement('a');
   a.href = video.src; a.download = 'vexa-video.mp4'; a.click();
   alert('Video esportato! Controlla i download.');
-                }
+}
