@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VEXA v3 - CapCut</title>
+<title>VEXA v1</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <div class="sidebar">
-<h2>VEXA <span>v3</span></h2>
+<h2>VEXA <span>v1</span></h2>
 <button id="btn-video" class="active" onclick="showSection('video')">🎬 Video / Tagli</button>
 <button id="btn-audio" onclick="showSection('audio')">🎵 Musica</button>
 <button id="btn-testo" onclick="showSection('testo')">✏️ Testo</button>
@@ -19,17 +19,12 @@
 </div>
 
 <div class="main">
-<div class="topbar"><div>VEXA <span>STUDIO</span></div><div>9:16 TikTok</div></div>
-
-<div class="video-area">
 <div class="video-wrap">
 <video id="video" playsinline controls></video>
 <div id="overlayText"></div>
 <div id="stickerLayer"></div>
 </div>
-</div>
 
-<div class="panel">
 <div id="sec-video">
 <div class="card"><b>1. IMPORTA VIDEO</b><input type="file" id="videoInput" accept="video/*">
 <div class="row"><button onclick="splitClip()">✂️ DIVIDI QUI</button><button onclick="undo()">↩ ANNULLA</button><button onclick="redo()">↪ RIFAI</button></div>
@@ -60,31 +55,17 @@
 </div>
 
 <div id="sec-ai" style="display:none">
-<div class="card"><b>5. AI</b><input type="text" id="aiInput" placeholder="Chiedi a VEXA..."><button class="primary" style="width:100%;margin-top:8px" onclick="askAI()">CHIEDI A VEXA ✨</button><p id="aiOut"></p></div>
-</div>
+<div class="card"><b>5. AI</b><input type="text" id="aiInput" placeholder="Chiedi a VEXA..."><button class="primary" onclick="askAI()">CHIEDI A VEXA ✨</button><p id="aiOut"></p></div>
 </div>
 
-<!-- LE 2 BARRE - SOLO HTML, lo stile è in style.css e la logica è in main.js -->
-<div class="timeline-box">
-<div class="timeline-label"><b>🔊 VOLUME - Trascina</b><span id="volText">50% 🔊</span></div>
+<div class="bar-box">
+<div class="bar-label"><b>🔊 VOLUME - Trascina</b><span id="volText">50% 🔊</span></div>
 <div class="bar-track" id="volBar"><div class="bar-fill" id="volFill"></div><div class="bar-handle" id="volHandle"></div></div>
-<div class="timeline-label"><b>🎬 VIDEO / IMMAGINE - Trascina</b><span id="videoText">0.0s / 0.0s</span></div>
-<div class="bar-track" id="videoBar"><div class="bar-fill video-fill" id="videoFill"></div><div class="bar-handle" id="videoHandle" style="left:0%"></div></div>
+<div class="bar-label"><b>🎬 VIDEO - Trascina</b><span id="videoText">0.0s / 0.0s</span></div>
+<div class="bar-track" id="videoBar"><div class="bar-fill video-fill" id="videoFill"></div><div class="bar-handle" id="videoHandle"></div></div>
 </div>
 
 </div>
-
-<script>
-function showSection(n){
-  ['video','audio','testo','effetti','ai'].forEach(x=>{
-    document.getElementById('sec-'+x).style.display=(x===n?'block':'none');
-  });
-  document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
-  let b=document.getElementById('btn-'+n); if(b) b.classList.add('active');
-}
-</script>
-<script src="js/editor.js"></script>
 <script src="js/main.js"></script>
-<script src="js/ai.js"></script>
 </body>
 </html>
