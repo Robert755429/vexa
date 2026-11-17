@@ -3,86 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VEXA</title>
+<title>VEXA - Editor Video Gratis</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+<a class="wa-float" href="https://wa.me/393887347002?text=Ciao%20VEXA!%20Ho%20una%20domanda" target="_blank">💬</a>
+
 <header class="topbar">
-<div class="logo">VEXA</div>
-<div class="top-actions">
-<label class="btn-import">↑ IMPORTA<input type="file" id="videoInput" accept="video/*" hidden></label>
-<button class="btn-export" onclick="exportVideo()">↓ ESPORTA</button>
-<button class="btn-menu" onclick="toggleMenu()">☰</button>
-</div>
+  <div class="logo">VEXA</div>
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
 </header>
 
-<div id="sidebar" class="sidebar">
-<button onclick="showSection('video');toggleMenu()">🎬 Video / Tagli</button>
-<button onclick="showSection('audio');toggleMenu()">🎵 Musica</button>
-<button onclick="showSection('testo');toggleMenu()">✏️ Testo</button>
-<button onclick="showSection('effetti');toggleMenu()">✨ Effetti</button>
-<button onclick="showSection('ai');toggleMenu()">🤖 AI</button>
-</div>
-<div id="overlayMenu" class="overlay-menu" onclick="toggleMenu()"></div>
+<div id="overlayMenu" class="overlay" onclick="toggleMenu()"></div>
+<aside id="sidebar" class="sidebar">
+  <button class="close-btn" onclick="toggleMenu()">✕</button>
+  <h3>Menu VEXA</h3>
+  <button onclick="showSection('video');toggleMenu()">🎬 Video</button>
+  <button onclick="showSection('audio');toggleMenu()">🎵 Audio</button>
+  <button onclick="showSection('testo');toggleMenu()">✍️ Testo</button>
+  <button onclick="showSection('effetti');toggleMenu()">✨ Effetti</button>
+  <button onclick="showSection('ai');toggleMenu()">🤖 AI</button>
+  <hr>
+  <a href="chi-siamo.html">Chi Siamo</a>
+  <a href="faq.html">FAQ</a>
+  <a href="contattami.html">Contattami</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="termini.html">Termini</a>
+  <a href="cookie.html">Cookie</a>
+</aside>
 
 <div class="main">
-<div class="video-wrap">
-<video id="video" playsinline controls></video>
-<div id="overlayText"></div>
-<div id="stickerLayer"></div>
+  <div class="card">
+    <div class="video-wrap">
+      <video id="video" controls playsinline></video>
+      <div id="overlayText" class="overlay-text"></div>
+      <div id="stickerLayer" class="sticker-layer"></div>
+    </div>
+    <audio id="music"></audio>
+
+    <label class="upload">📁 CARICA VIDEO <input type="file" id="videoInput" accept="video/*" hidden></label>
+    <label class="upload">🎵 CARICA MUSICA <input type="file" id="musicInput" accept="audio/*" hidden></label>
+
+    <div class="row">
+      <button onclick="togglePlay()">▶️ Play / Pausa</button>
+      <button onclick="splitClip()">✂️ Dividi</button>
+    </div>
+    <div class="row">
+      <button onclick="undo()">↩️ Indietro</button>
+      <button onclick="redo()">↪️ Avanti</button>
+      <button onclick="duplicateClip()">📄 Duplica</button>
+      <button onclick="clearAll()">🗑️ Cancella</button>
+    </div>
+
+    <div id="clips" class="clips"></div>
+
+    <div class="bar-label"><span>🔊 Volume</span><span id="volText">50% 🔊</span></div>
+    <div class="bar" id="volBar"><div class="fill" id="volFill" style="width:50%"></div><div class="handle" id="volHandle" style="left:calc(50% - 7px)"></div></div>
+
+    <div class="bar-label"><span>🎬 Video</span><span id="videoText">0s / 0s</span></div>
+    <div class="bar" id="videoBar"><div class="fill" id="videoFill" style="width:0%"></div><div class="handle" id="videoHandle" style="left:0"></div></div>
+
+    <div id="sec-video" class="section">
+      <h3>🎬 Video</h3>
+      <label>Velocità</label>
+      <select id="speed" onchange="setSpeed()"><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="1.5">1.5x</option><option value="2">2x</option></select>
+      <div class="row"><button onclick="rotateVideo()">🔄 Ruota</button><button onclick="mirrorVideo()">🪞 Specchio</button><button onclick="overwriteClip()">♻️ Sovrascrivi</button></div>
+    </div>
+
+    <div id="sec-audio" class="section" style="display:none">
+      <h3>🎵 Audio</h3>
+      <div class="row"><button onclick="playMusic()">▶️ Musica</button><button onclick="stopMusic()">⏹️ Stop</button><button onclick="toggleLoop()">🔁 Loop: <span id="loopTxt">OFF</span></button></div>
+    </div>
+
+    <div id="sec-testo" class="section" style="display:none">
+      <h3>✍️ Testo</h3>
+      <input type="text" id="textInput" placeholder="Scrivi il testo..." oninput="updateText()">
+      <select id="fontSel" onchange="updateText()"><option value="Arial">Arial</option><option value="Impact">Impact</option><option value="Comic Sans MS">Comic</option></select>
+      <select id="colorSel" onchange="updateText()"><option value="white">Bianco</option><option value="yellow">Giallo</option><option value="#a855f7">Viola</option><option value="#22c55e">Verde</option></select>
+      <select id="posSel" onchange="updateText()"><option value="10%">Alto</option><option value="45%">Centro</option><option value="80%">Basso</option></select>
+      <div class="row"><button onclick="toggleKaraoke()">🎤 Karaoke</button><button onclick="clearText()">❌ Togli testo</button></div>
+      <div class="stickers"><button onclick="addSticker('🔥')">🔥</button><button onclick="addSticker('😂')">😂</button><button onclick="addSticker('❤️')">❤️</button><button onclick="addSticker('😱')">😱</button><button onclick="addSticker('💀')">💀</button></div>
+    </div>
+
+    <div id="sec-effetti" class="section" style="display:none">
+      <h3>✨ Effetti</h3>
+      <select id="filter" onchange="setFilter()"><option value="none">Nessuno</option><option value="grayscale(1)">Bianco e Nero</option><option value="sepia(1)">Sepia</option><option value="contrast(1.5)">Contrasto</option><option value="saturate(2)">Super Colore</option></select>
+    </div>
+
+    <div id="sec-ai" class="section" style="display:none">
+      <h3>🤖 VEXA AI</h3>
+      <input type="text" id="aiInput" placeholder="Chiedi a VEXA AI... es. come faccio virale?">
+      <button onclick="askAI()">Chiedi a VEXA AI</button>
+      <p id="aiOut" class="ai-out">🤖 Ciao! Chiedimi come fare virale.</p>
+    </div>
+
+    <button class="export" onclick="exportVideo()">📤 ESPORTA VIDEO</button>
+  </div>
 </div>
 
-<div class="controls">
-<button onclick="togglePlay()">▶️ Play / Pausa</button>
-<button onclick="splitClip()">✂️ TAGLIA QUI</button>
-<select id="speed" onchange="setSpeed()"><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="1.5">1.5x</option><option value="2">2x</option></select>
-</div>
-<div class="controls">
-<select id="filter" onchange="setFilter()"><option value="none">Nessun filtro</option><option value="grayscale(1)">Bianco e Nero</option><option value="sepia(1)">Vintage</option><option value="saturate(1.8) contrast(1.2)">Vivido</option><option value="blur(3px)">Blur</option><option value="hue-rotate(90deg) saturate(1.5)">Neon</option></select>
-</div>
+<footer class="footer">
+  <div class="footer-links">
+    <a href="chi-siamo.html">Chi Siamo</a>
+    <a href="faq.html">FAQ</a>
+    <a href="contattami.html">Contattami</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="termini.html">Termini</a>
+    <a href="cookie.html">Cookie</a>
+    <a href="LICENSE.txt">Licenza</a>
+  </div>
+  <p>© 2026 VEXA - Tutti i diritti riservati. VEXA è gratis da usare, vietata la copia.</p>
+  <p class="footer-small">Usando VEXA accetti Termini, Privacy e Cookie.</p>
+</footer>
 
-<div id="sec-video">
-<div class="card"><div id="clips" class="timeline"></div>
-<div class="row"><button onclick="undo()">↩ ANNULLA</button><button onclick="redo()">↪ RIFAI</button><button onclick="duplicateClip()">📄 DUPLICA</button><button class="red" onclick="clearAll()">🗑 RESET</button></div>
-</div>
-</div>
-
-<div id="sec-audio" style="display:none">
-<div class="card"><b>🎵 MUSICA</b><input type="file" id="musicInput" accept="audio/*"><audio id="music"></audio>
-<div class="row"><button class="green" onclick="playMusic()">▶️ PLAY</button><button class="red" onclick="stopMusic()">⏹ STOP</button><button onclick="toggleLoop()">🔁 LOOP: <span id="loopTxt">OFF</span></button></div>
-</div>
-</div>
-
-<div id="sec-testo" style="display:none">
-<div class="card"><b>✏️ TESTO + KARAOKE</b><input type="text" id="textInput" placeholder="Scrivi testo..." oninput="updateText()">
-<div class="row"><select id="fontSel" onchange="updateText()"><option value="Arial Black">TikTok Bold</option><option value="Impact">Impact</option><option value="Georgia">Serif</option><option value="Courier New">Typewriter</option></select><input type="color" id="colorSel" value="#ffffff" onchange="updateText()"><select id="posSel" onchange="updateText()"><option value="72%">Sotto</option><option value="45%">Centro</option><option value="15%">Sopra</option></select></div>
-<div class="row"><button onclick="toggleKaraoke()">🎤 KARAOKE</button><button onclick="clearText()">❌ TOGLI TESTO</button></div>
-</div>
-</div>
-
-<div id="sec-effetti" style="display:none">
-<div class="card"><b>✨ EFFETTI</b><div class="row"><button onclick="rotateVideo()">🔄 RUOTA</button><button onclick="mirrorVideo()">🪞 SPECCHIA</button></div>
-<div class="row"><button onclick="addSticker('🔥')">🔥</button><button onclick="addSticker('😂')">😂</button><button onclick="addSticker('❤️')">❤️</button><button onclick="addSticker('⭐')">⭐</button></div>
-</div>
-</div>
-
-<div id="sec-ai">
-<div class="card ai-card"><b>🤖 VEXA AI</b><p>La tua AI di editing.</p>
-<input type="text" id="aiInput" placeholder="Chiedi a VEXA...">
-<button class="green big" onclick="askAI()">✨ Dammi un'idea</button>
-<p id="aiOut"></p>
-</div>
-</div>
-
-<div class="bar-box">
-<div class="bar-label"><b>🔊 VOLUME - Trascina</b><span id="volText">50% 🔊</span></div>
-<div class="bar-track" id="volBar"><div class="bar-fill" id="volFill"></div><div class="bar-handle" id="volHandle"></div></div>
-<div class="bar-label"><b>🎬 VIDEO - Trascina</b><span id="videoText">0.0s / 0.0s</span></div>
-<div class="bar-track" id="videoBar"><div class="bar-fill video-fill" id="videoFill"></div><div class="bar-handle" id="videoHandle"></div></div>
-</div>
-
-</div>
 <script src="js/editor.js"></script>
 <script src="js/main.js"></script>
 </body>
